@@ -26,5 +26,16 @@ db.exec(`
     password_hash TEXT
   )
 `);
+db.exec(`
+  CREATE TABLE IF NOT EXISTS meta (
+    key TEXT PRIMARY KEY,
+    value TEXT
+  )
+`);
 
+// Seed a default balance of 0 if none exists yet
+const existingBalance = db.prepare('SELECT value FROM meta WHERE key = ?').get('balance');
+if (!existingBalance) {
+  db.prepare('INSERT INTO meta (key, value) VALUES (?, ?)').run('balance', '0');
+}
 module.exports = db;
