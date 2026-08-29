@@ -5,11 +5,9 @@ const { validateTransaction, buildTransaction } = require('../models/transaction
 
 // GET /api/transactions — list all, with optional filters
 router.get('/', (req, res) => {
-  const data = readData();
+  const data = readData(req.userId);
   let transactions = data.transactions;
-
   const { from, to, category } = req.query;
-
   if (from) {
     transactions = transactions.filter(t => t.date >= from);
   }
@@ -19,7 +17,6 @@ router.get('/', (req, res) => {
   if (category) {
     transactions = transactions.filter(t => t.category === category);
   }
-
   res.json(transactions);
 });
 
@@ -29,12 +26,11 @@ router.post('/', (req, res) => {
   if (errors.length > 0) {
     return res.status(400).json({ errors });
   }
-
-  const data = readData();
+  const allData = readData();
   const newTransaction = buildTransaction(req.body);
-  data.transactions.push(newTransaction);
-  writeData(data);
-
+  newTransaction.userId = req.userId;
+  allData.transactions.push(newTransaction);
+  writeData(allData);
   res.status(201).json(newTransaction);
 });
 
@@ -44,34 +40,28 @@ router.put('/:id', (req, res) => {
   if (errors.length > 0) {
     return res.status(400).json({ errors });
   }
-
   const data = readData();
-  const index = data.transactions.findIndex(t => t.id === req.params.id);
-
+  const index = data.transactions.findIndex(t => t.id === req.params.id && t.userId === req.userId);
   if (index === -1) {
     return res.status(404).json({ error: 'Transaction not found' });
   }
-
   const updated = buildTransaction(req.body);
-  updated.id = req.params.id; // keep the original id
+  updated.id = req.params.id;
+  updated.userId = req.userId;
   data.transactions[index] = updated;
   writeData(data);
-
   res.json(updated);
 });
 
 // DELETE /api/transactions/:id — delete
 router.delete('/:id', (req, res) => {
   const data = readData();
-  const index = data.transactions.findIndex(t => t.id === req.params.id);
-
+  const index = data.transactions.findIndex(t => t.id === req.params.id && t.userId === req.userId);
   if (index === -1) {
     return res.status(404).json({ error: 'Transaction not found' });
   }
-
   data.transactions.splice(index, 1);
   writeData(data);
-
   res.status(204).send();
 });
 

@@ -19,8 +19,10 @@ function rowToTransaction(row) {
   };
 }
 
-function readData() {
-  const rows = db.prepare('SELECT * FROM transactions').all();
+function readData(userId) {
+  const rows = userId
+    ? db.prepare('SELECT * FROM transactions WHERE userId = ?').all(userId)
+    : db.prepare('SELECT * FROM transactions').all();
   const balanceRow = db.prepare('SELECT value FROM meta WHERE key = ?').get('balance');
   return {
     balance: balanceRow ? parseFloat(balanceRow.value) : 0,
