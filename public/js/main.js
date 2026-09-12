@@ -1,5 +1,7 @@
 /**
- * main.js — app init. Keep this thin: just wire up the modules.
+ * main.js — app init.
+ * Shows the auth screen first; once logged in, reveals the real app
+ * and loads transactions/forecast for that user.
  */
 
 function initThemeToggle() {
@@ -22,8 +24,39 @@ function initThemeToggle() {
   updateIcon();
 }
 
+function showApp() {
+  document.getElementById('auth-screen').classList.add('hidden-app');
+  document.querySelector('.app-header').classList.remove('hidden-app');
+  document.querySelector('.layout').classList.remove('hidden-app');
+}
+
+function showAuthScreen() {
+  document.getElementById('auth-screen').classList.remove('hidden-app');
+  document.querySelector('.app-header').classList.add('hidden-app');
+  document.querySelector('.layout').classList.add('hidden-app');
+}
+
+let appInitialized = false;
+
+function onAuthSuccess() {
+  showApp();
+  if (!appInitialized) {
+    initTransactions();
+    initForecast();
+    appInitialized = true;
+  } else {
+    refreshTransactions();
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
-  initTransactions();
-  initForecast();
+  initAuth();
+
+  // Already logged in from a previous action this session? Skip straight to the app.
+  if (getToken()) {
+    onAuthSuccess();
+  } else {
+    showAuthScreen();
+  }
 });

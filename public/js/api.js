@@ -1,11 +1,33 @@
 /**
  * api.js — fetch wrapper functions for the Budget Forecaster API.
  *
- * Contract finalized with backend — see API_CONTRACT.md.
- * Filters use `from`/`to`. Errors come back as { errors: ["msg", ...] }.
+ * All /api/transactions and /api/forecast routes now require auth —
+ * every request sends the stored token as a Bearer header.
  */
 
 const API_BASE = '/api';
+let authToken = null;
+
+function setToken(token) {
+  authToken = token;
+  sessionStorage.setItem('authToken', token);
+}
+
+function getToken() {
+  if (authToken) return authToken;
+  authToken = sessionStorage.getItem('authToken');
+  return authToken;
+}
+
+function clearToken() {
+  authToken = null;
+  sessionStorage.removeItem('authToken');
+}
+
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 async function handleResponse(res) {
   let body = null;
@@ -18,7 +40,7 @@ async function handleResponse(res) {
   if (!res.ok) {
     const messages = Array.isArray(body?.errors) && body.errors.length
       ? body.errors
-      : [`Request failed with status ${res.status}`];
+      : [body?.error || `Request failed with status ${res.status}`];
     throw new ApiError(messages, res.status);
   }
 
@@ -34,6 +56,28 @@ class ApiError extends Error {
   }
 }
 
+/* ===== Auth ===== */
+
+async function apiSignup(name, email, password) {
+  const res = await fetch(`${API_BASE}/auth/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, password }),
+  });
+  return handleResponse(res);
+}
+
+async function apiLogin(email, password) {
+  const res = await fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  return handleResponse(res);
+}
+
+/* ===== Transactions (all now require the auth header) ===== */
+
 async function getTransactions(filters = {}) {
   const params = new URLSearchParams();
   if (filters.from) params.set('from', filters.from);
@@ -41,14 +85,16 @@ async function getTransactions(filters = {}) {
   if (filters.category) params.set('category', filters.category);
 
   const query = params.toString();
-  const res = await fetch(`${API_BASE}/transactions${query ? `?${query}` : ''}`);
+  const res = await fetch(`${API_BASE}/transactions${query ? `?${query}` : ''}`, {
+    headers: { ...authHeaders() },
+  });
   return handleResponse(res);
 }
 
 async function createTransaction(data) {
   const res = await fetch(`${API_BASE}/transactions`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify(data),
   });
   return handleResponse(res);
@@ -57,7 +103,7 @@ async function createTransaction(data) {
 async function updateTransaction(id, data) {
   const res = await fetch(`${API_BASE}/transactions/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify(data),
   });
   return handleResponse(res);
@@ -66,11 +112,14 @@ async function updateTransaction(id, data) {
 async function deleteTransaction(id) {
   const res = await fetch(`${API_BASE}/transactions/${id}`, {
     method: 'DELETE',
+    headers: { ...authHeaders() },
   });
   return handleResponse(res);
 }
 
 async function getForecast(months = 6) {
-  const res = await fetch(`${API_BASE}/forecast?months=${months}`);
+  const res = await fetch(`${API_BASE}/forecast?months=${months}`, {
+    headers: { ...authHeaders() },
+  });
   return handleResponse(res);
 }

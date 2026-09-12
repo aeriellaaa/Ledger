@@ -881,3 +881,69 @@ button, input, select {
 
 .weekview__summary-value--income { color: var(--income, #4caf50); }
 .weekview__summary-value--expense { color: var(--expense, #e5657a); }
+
+/* ============================================
+   Auth screen
+   ============================================ */
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: var(--bg);
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, var(--line-faint) 28px);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-card .app-header__brand {
+  justify-content: center;
+}
+
+.auth-card .app-header__tag {
+  text-align: center;
+}
+
+.auth-tabs {
+  display: flex;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.auth-tab {
+  flex: 1;
+  background: var(--card-bg);
+  border: none;
+  padding: 9px 0;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.auth-tab.is-active {
+  background: var(--accent);
+  color: white;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden-app {
+  display: none !important;
+}
