@@ -1,26 +1,18 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const router = express.Router();
-const { findByEmail, createUser, verifyPassword } = require('../models/user');
-
-// TEMPORARY — move this to a real .env value in step 6, never commit a real secret
-const JWT_SECRET = 'dev-secret-change-me';
+const supabase = require('../models/supabaseClient');
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per window
+  windowMs: 15 * 60 * 1000,
+  max: 10,
   message: { errors: ['Too many attempts, please try again later'] }
 });
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
 
-function generateToken(user) {
-  return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
-}
-
-router.post('/signup', authLimiter, (req, res) => {
+router.post('/signup', authLimiter, async (req, res) => {
   const { name, email, password } = req.body;
   const errors = [];
 
@@ -33,31 +25,43 @@ router.post('/signup', authLimiter, (req, res) => {
     return res.status(400).json({ errors });
   }
 
-  const existing = findByEmail(email);
-  if (existing) {
-    return res.status(400).json({ errors: ['A user with that email already exists'] });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { name } }
+  });
+
+  if (error) {
+    return res.status(400).json({ errors: [error.message] });
   }
 
-  const user = createUser({ name, email, password });
-  const token = generateToken(user);
-
-  res.status(201).json({ token, user });
+  res.status(201).json({
+    token: data.session ? data.session.access_token : null,
+    user: { id: data.user.id, name, email: data.user.email }
+  });
 });
 
-router.post('/login', authLimiter, (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ errors: ['email and password are required'] });
   }
 
-  const user = findByEmail(email);
-  if (!user || !verifyPassword(user, password)) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
     return res.status(401).json({ errors: ['Invalid email or password'] });
   }
 
-  const token = generateToken(user);
-  res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+  res.json({
+    token: data.session.access_token,
+    user: {
+      id: data.user.id,
+      name: data.user.user_metadata.name,
+      email: data.user.email
+    }
+  });
 });
 
 module.exports = router;
