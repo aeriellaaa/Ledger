@@ -33,6 +33,11 @@ document.getElementById('profile-logout').addEventListener('click', () => {
   location.reload();
 });
 
+document.getElementById('header-logout').addEventListener('click', () => {
+  sessionStorage.clear();
+  location.reload();
+});
+
 // Password show/hide toggles on the auth screen.
 document.querySelectorAll('.password-toggle').forEach((btn) => {
   btn.addEventListener('click', () => {

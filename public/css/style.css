@@ -136,6 +136,20 @@ button, input, select {
   background: var(--line-strong);
 }
 
+.text-link {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  padding: 0;
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.text-link:hover { color: var(--expense); }
+
 .icon-btn {
   background: transparent;
   border: 1px solid var(--line-strong);
@@ -943,6 +957,12 @@ button, input, select {
   display: grid;
   grid-template-columns: 280px 1fr;
   overflow: hidden;
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.35);
+}
+
+.auth-card__form .btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -8px var(--accent);
 }
 
 .auth-card__cover {
@@ -1013,6 +1033,11 @@ button, input, select {
   flex-direction: column;
 }
 
+#login-form[hidden],
+#signup-form[hidden] {
+  display: none;
+}
+
 .password-wrap { position: relative; }
 
 .password-wrap input { padding-right: 38px; }
@@ -1035,6 +1060,15 @@ button, input, select {
 @media (max-width: 700px) {
   .auth-card { grid-template-columns: 1fr; max-width: 380px; }
   .auth-card__cover { border-right: none; border-bottom: 3px solid var(--accent); padding: 28px 28px 22px; }
+}
+
+@media (max-width: 480px) {
+  .auth-screen { padding: 16px; }
+  .auth-card__cover,
+  .auth-card__form { padding: 24px 22px; }
+  .auth-card__note { display: none; }
+  .field input,
+  .field select { font-size: 16px; }
 }
 
 .hidden-app {
