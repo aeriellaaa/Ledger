@@ -3,22 +3,20 @@ const router = express.Router();
 const { readData } = require('../models/storage');
 const { generateForecast } = require('../models/forecast');
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   const months = parseInt(req.query.months, 10);
-
   if (!req.query.months || isNaN(months) || months <= 0) {
     return res.status(400).json({ errors: ['months query param must be a positive number'] });
   }
-
   if (months > 60) {
     return res.status(400).json({ errors: ['months cannot exceed 60'] });
   }
 
   let data;
   try {
-    data = readData();
+    data = await readData(req.userId);
   } catch (err) {
-    return res.status(500).json({ errors: ['Failed to read data file'] });
+    return res.status(500).json({ errors: ['Failed to read data'] });
   }
 
   if (typeof data.balance !== 'number') {
