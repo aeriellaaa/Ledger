@@ -59,4 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     showAuthScreen();
   }
+  document.getElementById('header-date').textContent =
+  new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
 });

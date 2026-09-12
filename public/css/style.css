@@ -117,7 +117,26 @@ button, input, select {
   gap: 5px;
 }
 
-.theme-toggle {
+.app-header__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-header__stamp {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
+}
+
+.app-header__divider {
+  width: 1px;
+  height: 20px;
+  background: var(--line-strong);
+}
+
+.icon-btn {
   background: transparent;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
@@ -129,10 +148,29 @@ button, input, select {
   flex-shrink: 0;
 }
 
-.theme-toggle:hover {
+.icon-btn:hover {
   background: var(--bg);
   border-color: var(--ink-faint);
 }
+
+.avatar-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s var(--bounce);
+}
+
+.avatar-btn:hover { transform: scale(1.06); }
 
 .app-header__brand {
   display: flex;
@@ -882,9 +920,6 @@ button, input, select {
 .weekview__summary-value--income { color: var(--income, #4caf50); }
 .weekview__summary-value--expense { color: var(--expense, #e5657a); }
 
-/* ============================================
-   Auth screen
-   ============================================ */
 .auth-screen {
   min-height: 100vh;
   display: flex;
@@ -897,22 +932,51 @@ button, input, select {
 
 .auth-card {
   width: 100%;
-  max-width: 380px;
+  max-width: 760px;
   background: var(--card-bg);
   border: 1px solid var(--line);
   border-radius: 6px;
-  padding: 36px 32px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  overflow: hidden;
+}
+
+.auth-card__cover {
+  background: var(--ink);
+  color: var(--bg);
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(255,255,255,0.045) 28px);
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 3px solid var(--accent);
+}
+
+.auth-card__cover .app-header__mark { color: var(--accent); }
+.auth-card__cover .app-header__title,
+.auth-card__cover .auth-card__note { color: var(--bg); }
+
+.auth-card__tag {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.auth-card__note {
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.5;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.auth-card__form {
+  padding: 40px 36px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.auth-card .app-header__brand {
-  justify-content: center;
-}
-
-.auth-card .app-header__tag {
-  text-align: center;
 }
 
 .auth-tabs {
@@ -939,11 +1003,112 @@ button, input, select {
   color: white;
 }
 
-.auth-form {
-  display: flex;
-  flex-direction: column;
+.auth-form { display: flex; flex-direction: column; }
+
+.password-wrap { position: relative; }
+
+.password-wrap input { padding-right: 38px; }
+
+.password-toggle {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 6px;
+  color: var(--ink-faint);
 }
 
-.hidden-app {
-  display: none !important;
+.password-toggle:hover { color: var(--ink); }
+
+@media (max-width: 700px) {
+  .auth-card { grid-template-columns: 1fr; max-width: 380px; }
+  .auth-card__cover { border-right: none; border-bottom: 3px solid var(--accent); padding: 28px 28px 22px; }
 }
+.profile-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: var(--bg);
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, var(--line-faint) 28px);
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  position: relative;
+}
+
+.profile-card__close {
+  align-self: flex-start;
+  font-size: 13px;
+}
+
+.profile-card__id {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-card__name {
+  font-family: var(--font-display);
+  font-size: 19px;
+  margin: 0 0 2px;
+}
+
+.profile-card__email {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.profile-card__fields {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.profile-card__field {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+}
+
+.profile-card__field dt { color: var(--ink-soft); margin: 0; }
+.profile-card__field dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.profile-card__actions { display: flex; }
+.profile-card__actions .btn { flex: 1; }
