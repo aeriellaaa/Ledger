@@ -1,4 +1,4 @@
-const db = require('./db');
+const supabase = require('./supabaseClient');
 
 function rowToTransaction(row) {
   return {
@@ -12,56 +12,87 @@ function rowToTransaction(row) {
     recurrence: row.recurring
       ? {
           frequency: row.recurrence_frequency,
-          endDate: row.recurrence_endDate
+          endDate: row.recurrence_end_date
         }
       : null,
-    userId: row.userId || null
+    userId: row.user_id
   };
 }
 
-function readData(userId) {
-  const rows = userId
-    ? db.prepare('SELECT * FROM transactions WHERE userId = ?').all(userId)
-    : db.prepare('SELECT * FROM transactions').all();
-  const balanceRow = db.prepare('SELECT value FROM meta WHERE key = ?').get('balance');
+async function readData(userId) {
+  let query = supabase.from('transactions').select('*');
+  if (userId) {
+    query = query.eq('user_id', userId);
+  }
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+
+  const { data: balanceRow } = await supabase
+    .from('meta')
+    .select('value')
+    .eq('key', 'balance')
+    .single();
+
   return {
     balance: balanceRow ? parseFloat(balanceRow.value) : 0,
-    transactions: rows.map(rowToTransaction)
+    transactions: data.map(rowToTransaction)
   };
 }
 
-function writeData(data) {
-  const deleteAll = db.prepare('DELETE FROM transactions');
-  const insert = db.prepare(`
-    INSERT INTO transactions
-      (id, type, amount, category, date, description, recurring, recurrence_frequency, recurrence_endDate, userId)
-    VALUES
-      (@id, @type, @amount, @category, @date, @description, @recurring, @recurrence_frequency, @recurrence_endDate, @userId)
-  `);
+async function insertTransaction(transaction) {
+  const { data, error } = await supabase
+    .from('transactions')
+    .insert({
+      type: transaction.type,
+      amount: transaction.amount,
+      category: transaction.category,
+      date: transaction.date,
+      description: transaction.description || '',
+      recurring: transaction.recurring,
+      recurrence_frequency: transaction.recurring ? transaction.recurrence.frequency : null,
+      recurrence_end_date: transaction.recurring ? (transaction.recurrence.endDate || null) : null,
+      user_id: transaction.userId
+    })
+    .select()
+    .single();
 
-  const syncAll = db.transaction((transactions) => {
-    deleteAll.run();
-    for (const t of transactions) {
-      insert.run({
-        id: t.id,
-        type: t.type,
-        amount: t.amount,
-        category: t.category,
-        date: t.date,
-        description: t.description || '',
-        recurring: t.recurring ? 1 : 0,
-        recurrence_frequency: t.recurring ? t.recurrence.frequency : null,
-        recurrence_endDate: t.recurring ? (t.recurrence.endDate || null) : null,
-        userId: t.userId || null
-      });
-    }
-  });
-
-  syncAll(data.transactions);
-
-  if (typeof data.balance === 'number') {
-    db.prepare('UPDATE meta SET value = ? WHERE key = ?').run(data.balance.toString(), 'balance');
-  }
+  if (error) throw new Error(error.message);
+  return rowToTransaction(data);
 }
 
-module.exports = { readData, writeData };
+async function updateTransaction(id, userId, transaction) {
+  const { data, error } = await supabase
+    .from('transactions')
+    .update({
+      type: transaction.type,
+      amount: transaction.amount,
+      category: transaction.category,
+      date: transaction.date,
+      description: transaction.description || '',
+      recurring: transaction.recurring,
+      recurrence_frequency: transaction.recurring ? transaction.recurrence.frequency : null,
+      recurrence_end_date: transaction.recurring ? (transaction.recurrence.endDate || null) : null
+    })
+    .eq('id', id)
+    .eq('user_id', userId)
+    .select()
+    .single();
+
+  if (error || !data) return null;
+  return rowToTransaction(data);
+}
+
+async function deleteTransaction(id, userId) {
+  const { data, error } = await supabase
+    .from('transactions')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', userId)
+    .select()
+    .single();
+
+  if (error || !data) return false;
+  return true;
+}
+
+module.exports = { readData, insertTransaction, updateTransaction, deleteTransaction };
