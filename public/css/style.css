@@ -168,6 +168,7 @@ button, input, select {
   align-items: center;
   justify-content: center;
   transition: transform 0.15s var(--bounce);
+  flex-shrink: 0;
 }
 
 .avatar-btn:hover { transform: scale(1.06); }
@@ -920,6 +921,9 @@ button, input, select {
 .weekview__summary-value--income { color: var(--income, #4caf50); }
 .weekview__summary-value--expense { color: var(--expense, #e5657a); }
 
+/* ============================================
+   Auth screen
+   ============================================ */
 .auth-screen {
   min-height: 100vh;
   display: flex;
@@ -962,6 +966,7 @@ button, input, select {
   font-style: italic;
   font-size: 13px;
   opacity: 0.75;
+  color: var(--bg);
 }
 
 .auth-card__note {
@@ -1003,7 +1008,10 @@ button, input, select {
   color: white;
 }
 
-.auth-form { display: flex; flex-direction: column; }
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
 
 .password-wrap { position: relative; }
 
@@ -1028,6 +1036,14 @@ button, input, select {
   .auth-card { grid-template-columns: 1fr; max-width: 380px; }
   .auth-card__cover { border-right: none; border-bottom: 3px solid var(--accent); padding: 28px 28px 22px; }
 }
+
+.hidden-app {
+  display: none !important;
+}
+
+/* ============================================
+   Profile screen
+   ============================================ */
 .profile-screen {
   min-height: 100vh;
   display: flex;

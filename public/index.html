@@ -20,119 +20,121 @@
 </head>
 
 <body>
-
+    <!-- ===== Auth Screen ===== -->
   <div id="auth-screen" class="auth-screen">
-  <div class="auth-card">
-    <aside class="auth-card__cover">
-      <div class="app-header__brand">
-        <span class="app-header__mark">◧</span>
-        <h1 class="app-header__title">Ledger</h1>
-      </div>
-      <p class="auth-card__tag">a running account of what's coming</p>
-      <p class="auth-card__note">Every rupee, entered once,<br>accounted for everywhere.</p>
-    </aside>
-
-    <div class="auth-card__form">
-      <div class="auth-tabs">
-        <button type="button" class="auth-tab is-active" data-auth-tab="login">Log in</button>
-        <button type="button" class="auth-tab" data-auth-tab="signup">Sign up</button>
-      </div>
-
-      <form id="login-form" class="auth-form">
-        <div class="field">
-          <label for="login-email">Email</label>
-          <input type="email" id="login-email" required />
+    <div class="auth-card">
+      <aside class="auth-card__cover">
+        <div class="app-header__brand">
+          <span class="app-header__mark">◧</span>
+          <h1 class="app-header__title">Ledger</h1>
         </div>
-        <div class="field">
-          <label for="login-password">Password</label>
-          <div class="password-wrap">
-            <input type="password" id="login-password" required />
-            <button type="button" class="password-toggle" data-target="login-password" aria-label="Show password">👁</button>
+        <p class="auth-card__tag">a running account of what's coming</p>
+        <p class="auth-card__note">Every rupee, entered once,<br>accounted for everywhere.</p>
+      </aside>
+
+      <div class="auth-card__form">
+        <div class="auth-tabs">
+          <button type="button" class="auth-tab is-active" data-auth-tab="login">Log in</button>
+          <button type="button" class="auth-tab" data-auth-tab="signup">Sign up</button>
+        </div>
+
+        <form id="login-form" class="auth-form">
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" required />
           </div>
-        </div>
-        <div class="form-errors" id="login-errors" role="alert" hidden></div>
-        <button type="submit" class="btn btn--primary" id="login-submit">Log in</button>
-      </form>
-
-      <form id="signup-form" class="auth-form" hidden>
-        <div class="field">
-          <label for="signup-name">Name</label>
-          <input type="text" id="signup-name" required />
-        </div>
-        <div class="field">
-          <label for="signup-email">Email</label>
-          <input type="email" id="signup-email" required />
-        </div>
-        <div class="field">
-          <label for="signup-password">Password</label>
-          <div class="password-wrap">
-            <input type="password" id="signup-password" required />
-            <button type="button" class="password-toggle" data-target="signup-password" aria-label="Show password">👁</button>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <div class="password-wrap">
+              <input type="password" id="login-password" required />
+              <button type="button" class="password-toggle" data-target="login-password" aria-label="Show password">👁</button>
+            </div>
           </div>
-        </div>
-        <div class="form-errors" id="signup-errors" role="alert" hidden></div>
-        <button type="submit" class="btn btn--primary" id="signup-submit">Sign up</button>
-      </form>
+          <div class="form-errors" id="login-errors" role="alert" hidden></div>
+          <button type="submit" class="btn btn--primary" id="login-submit">Log in</button>
+        </form>
+
+        <form id="signup-form" class="auth-form" hidden>
+          <div class="field">
+            <label for="signup-name">Name</label>
+            <input type="text" id="signup-name" required />
+          </div>
+          <div class="field">
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" required />
+          </div>
+          <div class="field">
+            <label for="signup-password">Password</label>
+            <div class="password-wrap">
+              <input type="password" id="signup-password" required />
+              <button type="button" class="password-toggle" data-target="signup-password" aria-label="Show password">👁</button>
+            </div>
+          </div>
+          <div class="form-errors" id="signup-errors" role="alert" hidden></div>
+          <button type="submit" class="btn btn--primary" id="signup-submit">Sign up</button>
+        </form>
+      </div>
     </div>
   </div>
-</div>
-      <div id="profile-screen" class="profile-screen hidden-app" hidden>
-  <div class="profile-card">
-    <button type="button" id="profile-close" class="btn--icon profile-card__close">← Back</button>
 
-    <div class="profile-card__id">
-      <span class="profile-avatar" id="profile-avatar">M</span>
-      <div>
-        <h2 class="profile-card__name" id="profile-name">—</h2>
-        <p class="profile-card__email" id="profile-email">—</p>
-      </div>
-    </div>
+  <!-- ===== Profile Screen ===== -->
+  <div id="profile-screen" class="profile-screen hidden-app" hidden>
+    <div class="profile-card">
+      <button type="button" id="profile-close" class="btn--icon profile-card__close">← Back</button>
 
-    <dl class="profile-card__fields">
-      <div class="profile-card__field">
-        <dt>Account no.</dt>
-        <dd id="profile-account-no">—</dd>
+      <div class="profile-card__id">
+        <span class="profile-avatar" id="profile-avatar">M</span>
+        <div>
+          <h2 class="profile-card__name" id="profile-name">—</h2>
+          <p class="profile-card__email" id="profile-email">—</p>
+        </div>
       </div>
-      <div class="profile-card__field">
-        <dt>Member since</dt>
-        <dd id="profile-since">—</dd>
-      </div>
-      <div class="profile-card__field">
-        <dt>Currency</dt>
-        <dd>₹ INR</dd>
-      </div>
-      <div class="profile-card__field">
-        <dt>Theme</dt>
-        <dd id="profile-theme">—</dd>
-      </div>
-    </dl>
 
-    <div class="profile-card__actions">
-      <button type="button" id="profile-logout" class="btn btn--ghost">Log out</button>
+      <dl class="profile-card__fields">
+        <div class="profile-card__field">
+          <dt>Account no.</dt>
+          <dd id="profile-account-no">—</dd>
+        </div>
+        <div class="profile-card__field">
+          <dt>Member since</dt>
+          <dd id="profile-since">—</dd>
+        </div>
+        <div class="profile-card__field">
+          <dt>Currency</dt>
+          <dd>₹ INR</dd>
+        </div>
+        <div class="profile-card__field">
+          <dt>Theme</dt>
+          <dd id="profile-theme">—</dd>
+        </div>
+      </dl>
+
+      <div class="profile-card__actions">
+        <button type="button" id="profile-logout" class="btn btn--ghost">Log out</button>
+      </div>
     </div>
   </div>
-</div>
 
     <header class="app-header hidden-app">
-  <div class="app-header__inner">
-    <div class="app-header__text">
-      <div class="app-header__brand">
-        <span class="app-header__mark">◧</span>
-        <h1 class="app-header__title">Ledger</h1>
+    <div class="app-header__inner">
+      <div class="app-header__text">
+        <div class="app-header__brand">
+          <span class="app-header__mark">◧</span>
+          <h1 class="app-header__title">Ledger</h1>
+        </div>
+        <p class="app-header__tag">a running account of what's coming</p>
       </div>
-      <p class="app-header__tag">a running account of what's coming</p>
-    </div>
 
-    <div class="app-header__controls">
-      <span class="app-header__stamp" id="header-date"></span>
-      <span class="app-header__divider"></span>
-      <button type="button" id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode">🌙</button>
-      <button type="button" id="profile-open" class="avatar-btn" aria-label="Open profile">
-        <span id="avatar-initial">M</span>
-      </button>
+      <div class="app-header__controls">
+        <span class="app-header__stamp" id="header-date"></span>
+        <span class="app-header__divider"></span>
+        <button type="button" id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode">🌙</button>
+        <button type="button" id="profile-open" class="avatar-btn" aria-label="Open profile">
+          <span id="avatar-initial">M</span>
+        </button>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
 
     <main class="layout hidden-app">
 
@@ -316,12 +318,12 @@
 
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
   <script src="js/transactions.js"></script>
   <script src="js/heatmap.js"></script>
   <script src="js/chart.js"></script>
   <script src="js/forecast.js"></script>
   <script src="js/weekview.js"></script>
-  <script src="js/profile.js"></script>
   <script src="js/main.js"></script>
 </body>
 

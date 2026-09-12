@@ -46,9 +46,10 @@ function initLoginForm() {
     submitBtn.textContent = 'Logging in…';
 
     try {
-      const { token } = await apiLogin(email, password);
-      setToken(token);
-      onAuthSuccess();
+     const { token, user } = await apiLogin(email, password);
+    setToken(token);
+    sessionStorage.setItem('user', JSON.stringify(user));
+    onAuthSuccess();
     } catch (err) {
       showAuthError(errorsEl, err.messages ? err.messages.join(' ') : 'Login failed.');
     } finally {
@@ -75,9 +76,10 @@ function initSignupForm() {
     submitBtn.textContent = 'Signing up…';
 
     try {
-      const { token } = await apiSignup(name, email, password);
-      setToken(token);
-      onAuthSuccess();
+      const { token, user } = await apiSignup(name, email, password);
+     setToken(token);
+     sessionStorage.setItem('user', JSON.stringify(user));
+     onAuthSuccess();
     } catch (err) {
       showAuthError(errorsEl, err.messages ? err.messages.join(' ') : 'Signup failed.');
     } finally {
