@@ -1,8 +1,6 @@
-const jwt = require('jsonwebtoken');
+const supabase = require('../models/supabaseClient');
 
-const JWT_SECRET = 'dev-secret-change-me';
-
-function authMiddleware(req, res, next) {
+async function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -11,13 +9,14 @@ function authMiddleware(req, res, next) {
 
   const token = authHeader.split(' ')[1];
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.userId = decoded.userId;
-    next();
-  } catch (err) {
+  const { data, error } = await supabase.auth.getUser(token);
+
+  if (error || !data.user) {
     return res.status(401).json({ errors: ['Invalid or expired token'] });
   }
+
+  req.userId = data.user.id;
+  next();
 }
 
 module.exports = authMiddleware;
